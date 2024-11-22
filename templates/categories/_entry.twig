@@ -6,24 +6,68 @@
 	<!-- Homes for you -->
 	<div class="container c-section ">
 	<!-- todo: laad de titel en subtext in via de entry -->
-		<h2 class="c-section__title">Villa</h2>
-		<p class="c-section__subtitle">10 properties in this category.</p>
+
+		<h2 class="c-section__title">{{entry.title}}</h2>
+		<p class="c-section__subtitle">{{entry.subtext}}</p>
 
 		<div class="row g-4 justify-content-center c-section__content">
 			<!-- category card -->
 			<div  class="col-12 col-sm-6 col-lg-4 c-categories__card">
 			<!-- todo: laad de titel en image in via de entry -->
 					<div class="c-categories__info">
-						<h3 class="c-categories__title">Villa</h3>
+						<h3 class="c-categories__title">{{entry.title}}</h3>
 						<p class="">10 properties</p>
 					</div>
 					<div class="c-categories__imgcontainer">
-						<img src="img/modern-villa.jpeg" alt="" class="c-categories__img c-categories__img--page">
+						<img src="{{entry.cover.one().url()}}" alt="{{entry.title}}" class="c-categories__img c-categories__img--page">
 					</div>
 				</div>
 
+
+
 			<!-- todo: roep alle entries van de section 'houses' op die 'relatedTo' de entry zijn. Loop over deze entries en vul de immo-cards dynamisch in (zie templates/index.twig hiervoor) -->
 			<!-- immo card -->
+
+			{% set relatedHouses = craft.entries().section('house').relatedTo(entry).all() %}
+
+			{% for house in relatedHouses %}
+				<div class="col-12 col-sm-6 col-lg-4">
+					<a href="{{ house.url }}" class="c-immo-card">
+						<div class="c-immo-card__imgcontainer">
+							<img src="{{ house.cover.one().url() }}" alt="{{ house.title }}" class="c-immo-card__img">
+							<div class="c-immo-card__tag c-immo-card__tag--{{ house.status }}">
+								<p>{{ house.status | capitalize }}</p>
+							</div>
+						</div>
+						<div class="c-immo-card__infocontainer">
+							<div class="c-immo-card__heading">
+								<h3 class="c-immo-card__title">{{ house.title }}</h3>
+								<p class="c-immo-card__price">{{ house.price|money }}</p>
+							</div>
+							<div class="c-immo-card__location">
+								<img src="{{ url('img/icons/location.svg') }}" alt="">
+								<p>{{ house.location }}</p>
+							</div>
+							{% for row in house.details %}
+							<div class="c-immo-card__details">
+								<div class="c-immo-card__icons">
+									<img src="{{ url('img/icons/bed.svg') }}" alt="">
+									<p>{{ row.bedrooms }} beds</p>
+								</div>
+								<div class="c-immo-card__icons">
+									<img src="{{ url('img/icons/bath.svg') }}" alt="">
+									<p>{{ row.bathrooms }} baths</p>
+								</div>
+								<div class="c-immo-card__icons">
+									<img src="{{ url('img/icons/sqf.svg') }}" alt="">
+									<p>{{ row.size }}m²</p>
+								</div>
+							</div>
+							{% endfor %}
+						</div>
+					</a>
+				</div>
+			{% endfor %}
 			<div class="col-12 col-sm-6 col-lg-4">
 				<a href="#" class="c-immo-card">
 					<div class="c-immo-card__imgcontainer">
